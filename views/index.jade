@@ -1,0 +1,249 @@
+html(ng-app='ApertureApp')
+    head
+        title= title
+
+        script(src='/bootstrap/js/jquery-2.1.4.min.js')
+        script(src='/bootstrap/js/bootstrap.min.js')
+        script(src='/javascript/angular.js')
+        script(src='/javascript/ngStorage.js')
+        script(src='/javascript/main.js')
+
+        link(rel='stylesheet', href='bootstrap/css/bootstrap-theme.min.css')
+        link(rel='stylesheet', href='bootstrap/css/bootstrap.min.css')
+        link(rel='stylesheet', href='stylesheets/style.css')
+
+    body(ng-controller='apiController')
+        //Navbar
+        nav(class='navbar navbar-inverse')
+            div(class='container-fluid')
+                div(class='navbar-header')
+                    a(class='navbar-brand' href='/') Aperture Science Enrichment Center
+                    img(class='navbar-brand' height='50px' src='images/aperture.png')
+                    a(class='navbar-brand' href='/')
+                        em "Remember, testing is the future, and the future starts with you."
+
+        //Routes à sélectionner pour effectuer des actions
+        div(class="row-fluid")
+            div(class="col-sm-3 col-md-3 col-xs-3")
+                div(class='panel panel-default')
+                    div(class='panel-heading') Routes api
+                    div(class='panel-body')
+                        div(class='panel panel-primary')
+                            div(class='panel-heading') Afficher des éléments
+                            div(class='panel-body')
+                                ol(class='breadcrumb')
+                                    li api
+                                    li(class='active')
+                                        a(class = 'btn btn-primary', ng-click='getUtilisateurs()') utilisateurs
+
+                                ol(class='breadcrumb')
+                                    li api
+                                    li(class='active')
+                                        a(class = 'btn btn-primary', ng-click='getSujets()') sujets
+
+                                ol(class='breadcrumb')
+                                    li api
+                                    li(class='active')
+                                        a(class = 'btn btn-primary', ng-click='getSalles()') salles
+
+                        div(class='panel panel-success')
+                            div(class='panel-heading') Ajout d'éléments
+                            div(class='panel-body')
+                                ol(class='breadcrumb')
+                                    li api
+                                    li ajouter
+                                    li(class='active')
+                                        a(class = 'btn btn-success', data-toggle='modal', data-target='#popupAjoutSalle') salle
+                                ol(class='breadcrumb')
+                                    li api
+                                    li ajouter
+                                    li(class='active')
+                                        a(class = 'btn btn-success', data-toggle='modal', ng-click='getSalles()', data-target='#popupAjoutSujet') sujet
+
+                        div(class='panel panel-primary')
+                            div(class='panel-heading') Recherche selon les ID
+                            div(class='panel-body')
+                                ol(class='breadcrumb')
+                                    li api
+                                    li salle
+                                    li(class = 'active')
+                                        a(class = 'btn btn-primary', ng-click='getUneSalleSelonId()') salle_id
+                                div(class='form-group')
+                                    input(required, type='text', class='form-control', id='salle_id', name='salle_id' placeholder='Id de la salle à rechercher')
+                                ol(class='breadcrumb')
+                                    li api
+                                    li sujet
+                                    li(class = 'active')
+                                        a(class = 'btn btn-primary', ng-click='getUnSujetSelonId()') sujet_id
+                                div(class='form-group')
+                                    input(required, type='text', class='form-control', id='sujet_id', name='sujet_id' placeholder='Id du sujet à rechercher')
+
+                        div(class='panel panel-danger')
+                            div(class='panel-heading') Suppression selon les ID
+                            div(class='panel-body')
+                                ol(class='breadcrumb')
+                                    li api
+                                    li salle
+                                    li(class = 'active')
+                                        a(class = 'btn btn-danger', ng-click='supprimerSalleSelonId()') salle_id
+                                div(class='form-group')
+                                    input(required, type='text', class='form-control', id='salle_id_delete', name='salle_id_delete' placeholder='Id de la salle à supprimer')
+                                ol(class='breadcrumb')
+                                    li api
+                                    li sujet
+                                    li(class = 'active')
+                                        a(class = 'btn btn-danger', ng-click='supprimerSujetSelonId()') sujet_id
+                                div(class='form-group')
+                                    input(required, type='text', class='form-control', id='sujet_id_delete', name='sujet_id_delete' placeholder='Id du sujet à supprimer')
+
+        //Affichage des résultats
+        div(class="row-fluid")
+            div(class="col-sm-7 col-md-7 col-xs-7")
+                div(class='panel panel-default')
+                    div(class='panel-heading') Résultats obtenus
+                    div(class='panel-body')
+                        em Cliquez sur une des routes pour afficher les résultats
+
+                        //Affichage des résultats sur la route /api/utilisateurs
+                        table(class='table table-hover table-bordered' ng-show='!isUndefined(resultsUtilisateurs)')
+                            caption Utilisateurs de l'application
+                            thead
+                                th ID
+                                th Login
+                                th Mot de passe
+                            tbody(ng-repeat='res in resultsUtilisateurs')
+                                tr
+                                    td {{ res._id }}
+                                    td {{ res.login }}
+                                    td {{ res.pass }}
+
+                        //Affichage résultats sur la route /api/sujet/sujet_id
+                        table(class='table table-hover table-bordered' ng-show='!isUndefined(resultSujetsSelonId)')
+                            caption Sujet de test trouvé selon l'id
+                                thead
+                                    th Nom du sujet
+                                    th Salles attribuées
+                               tbody
+                                tr
+                                    td {{ resultSujetsSelonId.nom }}
+                                    td {{ resultSujetsSelonId.salles.join(" ; ") }}
+
+                        //Affichage des résultats sur la route /api/sujets
+                        table(class='table table-hover table-bordered' ng-show='!isUndefined(resultsSujets)')
+                            caption Sujets de test
+                            thead
+                                th ID
+                                th Nom du sujet de test
+                                th Salles attribuées
+                                th(align='center') Supprimer
+                            tbody(ng-repeat='res in resultsSujets track by $index')
+                                tr
+                                    td {{ res._id }}
+                                    td {{ res.nom }}
+                                    td {{ res.salles.join(" ; ") }}
+                                    td(align='center')
+                                        i(class='glyphicon glyphicon-trash' ng-click="supprimerSujetSelonIdClicIcone(resultsSujets[$index])")
+
+
+                        //Affichage résultats sur la route /api/salle/salle_id
+                        table(class='table table-hover table-bordered' ng-show='!isUndefined(resultSallesSelonId)')
+                            caption Salle de test trouvée selon l'ID
+                                thead
+                                    th Numéro de salle
+                                    th Nom de la salle
+                               tbody
+                                tr
+                                    td {{ resultSallesSelonId.numero }}
+                                    td {{ resultSallesSelonId.nom }}
+
+                        //Affichage résultats sur la route /api/salles
+                        table(class='table table-hover table-bordered' ng-show='!isUndefined(resultsSalles)')
+                            caption Salles de test
+                            thead
+                                th ID
+                                th Numéro de salle
+                                th Nom de la salle
+                                th(align='center') Supprimer
+                            tbody(ng-repeat='res in resultsSalles track by $index')
+                                tr
+                                    td {{ res._id }}
+                                    td {{ res.numero }}
+                                    td {{ res.nom }}
+                                    td(align='center')
+                                        i(class='glyphicon glyphicon-trash' ng-click="supprimerSalleSelonIdClicIcone(resultsSalles[$index])")
+
+
+
+
+        //Formulaire de connexion/obtention du token
+        div(class="row-fluid")
+            div(class="col-sm-2 col-md-2 col-xs-2")
+                div(class='panel panel-primary')
+                    div(class='panel-heading') Connexion
+                    div(class='panel-body')
+                        div(id='loginForm')
+                            form(id='formConnexion', ng-show="showConnexion")
+                                div(class='form-group')
+                                    label(for='login') Adresse mail
+                                    input(required, type='text', class='form-control', id='login', name='login' placeholder='Email')
+                                div(class='form-group')
+                                    label(for='pass') Mot de passe
+                                    input(required, type='password', class='form-control', id='pass', name='pass' placeholder='Mot de passe')
+                                div(id='errorLogin')
+                                input(class='btn btn-default btn-responsive', type='submit', ng-click='login()', value='Se connecter')
+
+                            div(id='btnDeco', ng-show="!showConnexion")
+                                input(class='btn btn-default', ng-click='deconnexion()', value='Deconnexion')
+                        //input(class='btn btn-default', ng-click='voirToken()', value='Voir le token')
+
+
+        //Popup qui s'ouvre lorsqu'on veut ajouter une salle
+        #popupAjoutSalle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel')
+            .modal-dialog(role='document')
+                .modal-content
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                        h4#popupAjoutSalleLabel.modal-title Ajouter une salle
+                    .modal-body
+                        form(id='formAjoutSalle')
+                            div(class='form-group')
+                                label(for='numeroSalle') Numéro de la salle
+                                input(required, type='number', class='form-control', id='numeroSalle', name='numeroSalle' placeholder='Numéro de la salle')
+                            div(class='form-group')
+                                label(for='nomSalle') Nom de la salle
+                                input(required, type='text', class='form-control', id='nomSalle', name='nomSalle' placeholder='Nom de la salle')
+                            input(class='btn btn-default btn-responsive', type='submit', ng-click='ajouterSalle()', value='Ajouter !')
+                        #errorAjoutSalle
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Fermer
+
+        //Popup qui s'ouvre lorsqu'on veut ajouter un sujet
+        #popupAjoutSujet.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel')
+            .modal-dialog(role='document')
+                .modal-content
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                        h4#popupAjoutSujetLabel.modal-title Ajout d'un sujet de test
+                    .modal-body
+                        form(id='formAjoutSujet' class='form')
+                            div(class="row-fluid")
+                                div(class='form-group')
+                                    label(for='nomSujet') Nom du sujet de test
+                                    input(required, type='text', class='form-control', id='nomSujet', name='nomSujet' placeholder='Nom du sujet de test')
+                                div(class='form-inline')
+                                    div(class='panel panel-success')
+                                        div(class='panel-heading') Ajout des salles
+                                        div(class='panel-body', id='sallesToAddSujet')
+                                            fieldset(data-ng-repeat='choice in choices')
+                                                select(class='form-control')
+                                                    option(ng-repeat='salle in resultsSalles') {{ salle.numero }} - {{ salle.nom }}
+                                                button.btn.btn-danger(ng-show='$last', ng-click='removeChoice()') -
+                                            div(class='form-group')
+                                                button.btn.btn-success(ng-click='addNewChoice()') Ajouter une salle au sujet
+
+                                input(class='btn btn-default btn-responsive', type='submit', ng-click='ajouterSujet()', value='Ajouter !')
+                                #errorAjoutSujet
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Fermer

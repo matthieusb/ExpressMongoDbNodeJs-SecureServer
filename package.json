@@ -1,0 +1,28 @@
+{
+  "name": "tp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "cookie-parser": "^1.4.1",
+    "express": "^4.13.4",
+    "follow-redirects": "0.0.7",
+    "fs": "0.0.2",
+    "http": "0.0.0",
+    "https": "^1.0.0",
+    "jade": "^1.11.0",
+    "jsonwebtoken": "^5.5.4",
+    "less-middleware": "^2.0.1",
+    "mongoose": "~3.6.13",
+    "morgan": "^1.6.1",
+    "nodeunit": "^0.9.1",
+    "serve-favicon": "^2.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "tap test/*.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

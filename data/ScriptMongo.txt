@@ -1,0 +1,33 @@
+----------- Suppression
+use apiApertureBdd
+db.dropDatabase();
+
+----------- CREATION BDD
+Ouvrir un Mongo et créer la BDD ->
+use apiApertureBdd
+
+------------ REMPLISSAGE
+db.utilisateur.insert({"login" : "glados@aperture.fr", "pass" : "caroline"});
+db.utilisateur.insert({"login" : "wheatley@aperture.fr", "pass" : "iminspace"});
+db.utilisateur.insert({"login" : "fd@aperture.fr", "pass" : "fd"});
+db.utilisateur.insert({"login" : "saubouaben@aperture.fr", "pass" : "sb"});
+db.utilisateur.insert({"login" : "test", "pass" : "test"});
+db.utilisateur.insert({"login" : "t", "pass" : "t"});
+
+db.salle.insert({"numero" : 42, "nom" : "Salle du sens de la vie"});
+db.salle.insert({"numero" : 4, "nom" : "Chemins"});
+db.salle.insert({"numero" : 36, "nom" : "6x6"});
+db.salle.insert({"numero" : 1, "nom" : "Salle d'initiation"});
+db.salle.insert({"numero" : 21, "nom" : "Salle de blackjack"});
+db.salle.insert({"numero" : 1000, "nom" : "Salle du gateau"});
+db.salle.insert({"numero" : 404, "nom" : "Room Not found"});
+db.salle.insert({"numero" : 666, "nom" : "Salle des tourelles"});
+db.salle.insert({"numero" : 123, "nom" : "Salle du soleil"});
+
+db.sujet.insert({"nom" : "Chell", "salles": [{"numero" : 1},{"numero" : 4},{"numero" : 36},{"numero" : 42},{"numero" : 21},{"numero" : 123},{"numero" : 404},{"numero" : 666},{"numero" : 1000}]});
+db.sujet.insert({"nom" : "Doug Rattman", "salles": [{"numero" : 1},{"numero" : 42},{"numero" : 21}]});
+db.sujet.insert({"nom" : "Companion Cube", "salles": [{"numero" : 1},{"numero" : 666}]});
+db.sujet.insert({"nom" : "Cave Johnson", "salles": [{"numero" : 1},{"numero" : 1000}]});
+db.sujet.insert({"nom" : "Caroline", "salles": [{"numero" : 1},{"numero" : 36}]});
+db.sujet.insert({"nom" : "Atlas", "salles": [{"numero" : 1},{"numero" : 404}]});
+db.sujet.insert({"nom" : "P-Body", "salles": [{"numero" : 1},{"numero" : 404}]});
